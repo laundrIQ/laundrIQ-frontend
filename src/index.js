@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import Home from "./Home.js";
+import themes from "./styles/themes.js";
+import {ThemeProvider} from "@material-ui/core/styles";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const Root = () => {
+    const [darkMode, setDarkMode] = React.useState(themes.isDarkTheme());
+    themes.onThemeChange(enable => {
+        setDarkMode(enable);
+    });
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    return (
+        <ThemeProvider theme={themes.getCurrentTheme()}>
+            <Home/>
+        </ThemeProvider>
+    );
+}
+
+ReactDOM.render(<Root/>, document.getElementById('root'));
