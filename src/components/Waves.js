@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         width: '100%',
         overflow: 'hidden',
-        height: '12em',
+        height: '6rem',
         transform: 'scaleY(-1)'
     }
 }));

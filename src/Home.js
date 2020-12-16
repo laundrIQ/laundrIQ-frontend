@@ -1,18 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
-import useTheme from "@material-ui/core/styles/useTheme.js";
 import Waves from "./components/Waves.js";
 import IconButton from "@material-ui/core/IconButton";
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import themes from "./styles/themes.js";
+import BodyContent from "./components/BodyContent.js";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
     root: {
         width: "100vw",
         height: "100vh",
-        backgroundColor: theme.palette.background.default
+        backgroundColor: theme.palette.background.default,
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    headerContainer: {
+        flexShrink: 0,
     },
     headerContent: {
         display: 'flex',
@@ -32,6 +38,14 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.background.default,
       flexShrink: 0,
         width: '66px',
+    },
+    homeBody: {
+        flexGrow: 1,
+        padding: '2em',
+        position: 'relative'
+    },
+    homeFooter: {
+        flexShrink: 0,
     }
 }));
 
@@ -39,9 +53,9 @@ const Header = props => {
     const classes = useStyles();
 
     return (
-        <div>
+        <div className={classes.headerContainer}>
             <div className={classes.headerContent}>
-                <div className={classes.headerTitle}>{props.title}</div>
+                <Typography className={classes.headerTitle}>{props.title}</Typography>
                 <IconButton
                     className={classes.themeSwitcherButton}
                     onClick={() => themes.setDarkTheme(!themes.isDarkTheme())}
@@ -64,6 +78,12 @@ const Home = props => {
     return (
         <div className={classes.root}>
             <Header title="laundrIQ"/>
+            <div className={classes.homeBody}>
+            <BodyContent/>
+            </div>
+            <div className={classes.homeFooter}>
+
+            </div>
         </div>
     );
 };

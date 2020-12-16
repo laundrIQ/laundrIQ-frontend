@@ -4,6 +4,7 @@ import './index.css';
 import Home from "./Home.js";
 import themes from "./styles/themes.js";
 import {ThemeProvider} from "@material-ui/core/styles";
+import {BrowserRouter} from "react-router-dom";
 
 const Root = () => {
     const [darkMode, setDarkMode] = React.useState(themes.isDarkTheme());
@@ -12,9 +13,11 @@ const Root = () => {
     });
 
     return (
-        <ThemeProvider theme={themes.getCurrentTheme()}>
-            <Home/>
-        </ThemeProvider>
+        <BrowserRouter>
+            <ThemeProvider theme={themes.getCurrentTheme()}>
+                <Home/>
+            </ThemeProvider>
+        </BrowserRouter>
     );
 }
 
