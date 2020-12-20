@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     },
     roomCard: {
         minWidth: '20em',
+        margin: '1em',
         maxWidth: 'calc(100vw - 2em)'
     },
     roomTitle: {
@@ -120,7 +121,7 @@ const Dashboard = props => {
 
         const interval = setInterval(async () => {
             setRooms((await api.getCurrentStatus()).rooms);
-        }, 30000);
+        }, 10000);
 
         return () => {
             clearInterval(interval);
