@@ -15,7 +15,8 @@ const useStyles = makeStyles(theme => ({
         height: "100vh",
         backgroundColor: theme.palette.background.default,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        transition: 'background-color 0.5s, color 0.5s'
     },
     headerContainer: {
         flexShrink: 0,
@@ -55,7 +56,9 @@ const Header = props => {
     return (
         <div className={classes.headerContainer}>
             <div className={classes.headerContent}>
-                <Typography className={classes.headerTitle}>{props.title}</Typography>
+                <Typography className={classes.headerTitle}>
+                    {props.title}
+                </Typography>
                 <IconButton
                     className={classes.themeSwitcherButton}
                     onClick={() => themes.setDarkTheme(!themes.isDarkTheme())}

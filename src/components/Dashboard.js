@@ -8,8 +8,9 @@ import {Typography} from "@material-ui/core";
 import useTheme from "@material-ui/core/styles/useTheme.js";
 import PropTypes from 'prop-types';
 import api from "../util/api.js";
-import {Room} from "@material-ui/icons";
-import moment from "moment";
+import display from "../util/display.js";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import MachineDetailsDialog from "./MachineDetailsDialog.js";
 
 const useStyles = makeStyles(theme => ({
     dashboard: {
@@ -60,24 +61,27 @@ const MachineItem = props => {
 
     return (
         <Card variant="outlined" className={classes.machineItemCard}>
-            <div className={classes.machineItemContainer}>
-                <LaundryIcon className={classes.machineIcon} style={{fill: iconColor}}/>
-                <div className={classes.machineTextContainer}>
-                    <Typography className={classes.machineTitle}>
-                        Machine {props.name}
-                    </Typography>
-                    <Typography className={classes.machineSubtitle}>
-                        {props.status}
-                    </Typography>
+            <CardActionArea onClick={props.onClick}>
+                <div className={classes.machineItemContainer}>
+                    <LaundryIcon className={classes.machineIcon} style={{fill: iconColor}}/>
+                    <div className={classes.machineTextContainer}>
+                        <Typography className={classes.machineTitle}>
+                            Machine {props.name}
+                        </Typography>
+                        <Typography className={classes.machineSubtitle}>
+                            {props.status}
+                        </Typography>
+                    </div>
                 </div>
-            </div>
+            </CardActionArea>
         </Card>
     );
 }
 MachineItem.propTypes = {
     name: PropTypes.string,
     status: PropTypes.string,
-    isBusy: PropTypes.bool
+    isBusy: PropTypes.bool,
+    onClick: PropTypes.func
 };
 
 const RoomCard = props => {
@@ -87,7 +91,7 @@ const RoomCard = props => {
     for (const machine of props.machines) {
         let status = "available";
         if (machine.isBusy) {
-            status = `~ ${moment(machine.projectedEndTime).fromNow(true)} left`;
+            status = display.getPrettyTimeRelative(machine.endTime.earliest, machine.endTime.latest) + " left";
         }
         machineCards.push(
             <MachineItem
@@ -95,7 +99,9 @@ const RoomCard = props => {
                 status={status}
                 isBusy={machine.isBusy}
                 key={machine.name}
-            />);
+                onClick={() => props.onMachineClick(machine)}
+            />
+        );
     }
 
     return (
@@ -110,11 +116,19 @@ const RoomCard = props => {
             </CardContent>
         </Card>
     );
-}
+};
+
+RoomCard.propTypes = {
+    name: PropTypes.string,
+    machines: PropTypes.array,
+    onMachineClick: PropTypes.func
+};
 
 const Dashboard = props => {
     const classes = useStyles();
     const [rooms, setRooms] = useState([]);
+    const [detailMachine, setDetailMachine] = useState({});
+    const [showDetails, setShowDetails] = useState(false);
 
     useEffect(async () => {
         setRooms((await api.getCurrentStatus()).rooms)
@@ -136,6 +150,10 @@ const Dashboard = props => {
             <RoomCard
                 name={room.name}
                 machines={room.machines}
+                onMachineClick={m => {
+                    setDetailMachine(m);
+                    setShowDetails(true);
+                }}
             />);
     }
 
@@ -146,6 +164,11 @@ const Dashboard = props => {
     return (
         <div className={classes.dashboard}>
             {roomCards}
+            <MachineDetailsDialog
+                open={showDetails}
+                machine={detailMachine}
+                onClose={() => setShowDetails(false)}
+            />
         </div>
     );
 };
