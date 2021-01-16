@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
         lineHeight: '1em',
     },
     detailText: {
-        fontSize: '1.1em'
+        fontSize: '1.1em',
+        textTransform: 'lowercase'
     }
 }));
 
