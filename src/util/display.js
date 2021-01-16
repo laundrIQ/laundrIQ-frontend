@@ -14,6 +14,10 @@ const getPrettyTimeRelative = (earliest, latest) => {
     }
     // this is for when the earliest possible free-time has already passed
     else if (moment(earliest).isBefore()) {
+        // both our estimates failed
+        if (moment(latest).isBefore()) {
+            return "~ a few minutes";
+        }
         return `~ ${latest_str}`;
     }
 
