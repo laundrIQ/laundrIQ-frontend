@@ -15,7 +15,8 @@ import display from "../util/display.js";
 const useStyles = makeStyles(theme => ({
     detailRoot: {
         display: "flex",
-        minWidth: '10em'
+        minWidth: '10em',
+        marginBottom: '1em'
     },
     detailIcon: {
         marginTop: '0.045em',
@@ -92,7 +93,7 @@ const MachineDetailsDialog = props => {
     }
 
     return (
-        <Dialog open={props.open}>
+        <Dialog open={props.open} onClose={props.onClose}>
             <DialogTitle>Machine {props.machine.name}</DialogTitle>
             <DialogContent>
                 <DetailItem
