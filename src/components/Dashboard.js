@@ -11,6 +11,7 @@ import api from "../util/api.js";
 import display from "../util/display.js";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import MachineDetailsDialog from "./MachineDetailsDialog.js";
+import CardTitle from "./CardTitle.js";
 
 const useStyles = makeStyles(theme => ({
     dashboard: {
@@ -18,19 +19,13 @@ const useStyles = makeStyles(theme => ({
         flexWrap: 'wrap'
     },
     roomCard: {
-        minWidth: '20em',
+        width: '20em',
         margin: '1em',
-        maxWidth: 'calc(100vw - 2em)'
-    },
-    roomTitle: {
-        marginTop: 0,
-        marginBottom: 0,
-        fontSize: '2.5em',
-        fontWeight: 600,
-        color: theme.palette.primary.main
+        maxWidth: 'calc(100vw - 6em)'
     },
     machineItemCard: {
-        marginTop: '0.5em'
+        marginTop: '0.5em',
+        background: 'transparent'
     },
     machineItemContainer: {
         padding: '0.5em',
@@ -107,9 +102,9 @@ const RoomCard = props => {
     return (
         <Card className={classes.roomCard}>
             <CardContent>
-                <h2 className={classes.roomTitle}>
+                <CardTitle>
                     Room {props.name}
-                </h2>
+                </CardTitle>
                 <List>
                     {machineCards}
                 </List>
@@ -129,6 +124,8 @@ const Dashboard = props => {
     const [rooms, setRooms] = useState([]);
     const [detailMachine, setDetailMachine] = useState({});
     const [showDetails, setShowDetails] = useState(false);
+
+    // TODO: add error handling
 
     useEffect(async () => {
         setRooms((await api.getCurrentStatus()).rooms)
