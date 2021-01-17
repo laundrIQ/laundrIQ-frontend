@@ -6,11 +6,11 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import Icon from '@material-ui/core/Icon';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import moment from "moment";
 import useTheme from "@material-ui/core/styles/useTheme.js";
 import display from "../util/display.js";
+import RoundIcon from "./RoundIcon.js";
 
 const useStyles = makeStyles(theme => ({
     detailRoot: {
@@ -44,12 +44,12 @@ const DetailItem = props => {
 
     return (
         <div className={classes.detailRoot}>
-            <Icon
+            <RoundIcon
                 className={classes.detailIcon}
                 style={{color: props.iconColor}}
             >
                 {props.icon}
-            </Icon>
+            </RoundIcon>
             <div className={classes.detailContent}>
                 <Typography className={classes.detailTitle}>
                     {props.title}

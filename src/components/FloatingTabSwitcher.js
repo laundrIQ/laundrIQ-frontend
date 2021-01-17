@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import Paper from "@material-ui/core/Paper";
 import {CardActionArea, fade} from "@material-ui/core";
-import Icon from "@material-ui/core/Icon";
 import themes from "../styles/themes.js";
+import RoundIcon from "./RoundIcon.js";
 
 const useStyles = makeStyles(theme => ({
     switcherRoot: {
@@ -35,7 +35,7 @@ const TabItem = props => {
             className={`${classes.icon} ${props.selected && classes.iconSelected}`}
             onClick={props.onClick}
         >
-            <Icon>{props.icon}</Icon>
+            <RoundIcon>{props.icon}</RoundIcon>
         </CardActionArea>
     );
 };
