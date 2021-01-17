@@ -8,15 +8,25 @@ import Brightness7Icon from '@material-ui/icons/Brightness7';
 import themes from "./styles/themes.js";
 import BodyContent from "./components/BodyContent.js";
 import Typography from "@material-ui/core/Typography";
+import FloatingTabSwitcher from "./components/FloatingTabSwitcher.js";
+import { useHistory  } from 'react-router-dom'
+
+// FORMAT: [url]: [icon]
+const tabs = {
+    '/': "home",
+    '/schedule': "event"
+};
 
 const useStyles = makeStyles(theme => ({
     root: {
+        position: "absolute",
+        overflow: "scroll",
         width: "100vw",
         height: "100vh",
         backgroundColor: theme.palette.background.default,
         display: 'flex',
         flexDirection: 'column',
-        transition: 'background-color 0.5s, color 0.5s'
+        transition: 'background-color 0.5s, color 0.5s',
     },
     headerContainer: {
         flexShrink: 0,
@@ -36,8 +46,8 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 0
     },
     themeSwitcherButton: {
-      color: theme.palette.background.default,
-      flexShrink: 0,
+        color: theme.palette.background.default,
+        flexShrink: 0,
         width: '66px',
     },
     homeBody: {
@@ -46,6 +56,12 @@ const useStyles = makeStyles(theme => ({
         position: 'relative'
     },
     homeFooter: {
+        position: "fixed",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: '100vw',
+        bottom: 'min(5vh, 5vw)',
         flexShrink: 0,
     }
 }));
@@ -77,22 +93,24 @@ Header.propTypes = {
 
 const Home = props => {
     const classes = useStyles();
+    const history = useHistory();
 
     return (
         <div className={classes.root}>
             <Header title="laundrIQ"/>
             <div className={classes.homeBody}>
-            <BodyContent/>
+                <BodyContent/>
             </div>
             <div className={classes.homeFooter}>
-
+                <FloatingTabSwitcher
+                    tabs={tabs}
+                    onSwitch={t => history.push(t)}
+                />
             </div>
         </div>
     );
 };
 
-Home.propTypes = {
-    
-};
+Home.propTypes = {};
 
 export default Home;
