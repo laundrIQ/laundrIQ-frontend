@@ -20,7 +20,7 @@ const tabs = {
 const useStyles = makeStyles(theme => ({
     root: {
         position: "absolute",
-        overflow: "scroll",
+        overflow: "auto",
         width: "100vw",
         height: "100vh",
         backgroundColor: theme.palette.background.default,
@@ -53,6 +53,7 @@ const useStyles = makeStyles(theme => ({
     homeBody: {
         flexGrow: 1,
         padding: '2em',
+        paddingBottom: '3em',
         position: 'relative'
     },
     homeFooter: {
