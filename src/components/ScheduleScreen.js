@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
-import Paper from "@material-ui/core/Paper";
-import Schedule from "./Schedule.js";
-import CardContent from "@material-ui/core/CardContent";
-import CardTitle from "./CardTitle.js";
-import Card from "@material-ui/core/Card";
+import ScheduleCard from "./ScheduleCard.js";
 
 const useStyles = makeStyles(theme => ({
     scheduleScreen: {
@@ -16,16 +12,29 @@ const useStyles = makeStyles(theme => ({
 
 const ScheduleScreen = props => {
     const classes = useStyles();
+
+    const generateFakeMachineData = () => {
+        let data = [];
+        for (let i = 0; i < 12; i++) {
+            data.push(Math.random());
+        }
+        return data;
+    }
+
+    let fakeData = [];
+    for (let i = 0; i < 7; i++) {
+        fakeData.push({
+            'X-1': generateFakeMachineData(),
+            'X-2': generateFakeMachineData()
+        });
+    }
+
     return (
         <div className={classes.scheduleScreen}>
-            <Card>
-                <CardContent>
-                    <CardTitle>
-                        Room X
-                    </CardTitle>
-                    <Schedule/>
-                </CardContent>
-            </Card>
+            <ScheduleCard
+                name="Room X"
+                data={fakeData}
+            />
         </div>
     );
 };
