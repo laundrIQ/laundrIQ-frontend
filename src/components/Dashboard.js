@@ -12,6 +12,8 @@ import display from "../util/display.js";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import MachineDetailsDialog from "./MachineDetailsDialog.js";
 import CardTitle from "./CardTitle.js";
+import {animated, useTransition} from "react-spring";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles(theme => ({
     dashboard: {
@@ -124,11 +126,13 @@ const Dashboard = props => {
     const [rooms, setRooms] = useState([]);
     const [detailMachine, setDetailMachine] = useState({});
     const [showDetails, setShowDetails] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // TODO: add error handling
 
     useEffect(async () => {
-        setRooms((await api.getCurrentStatus()).rooms)
+        setRooms((await api.getCurrentStatus()).rooms);
+        setLoading(false);
 
         const interval = setInterval(async () => {
             setRooms((await api.getCurrentStatus()).rooms);
@@ -140,27 +144,57 @@ const Dashboard = props => {
     }, []);
 
     const roomCards = [];
-
-    console.log("rooms", rooms);
-    for (const room of rooms) {
+    if (loading) {
         roomCards.push(
-            <RoomCard
-                name={room.name}
-                machines={room.machines}
-                onMachineClick={m => {
-                    setDetailMachine(m);
-                    setShowDetails(true);
-                }}
-            />);
+            <div key="spinner" style={{
+                position: 'absolute',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '10em',
+                height: '10em'
+            }}>
+                <CircularProgress  style={{position: 'absolute'}}/>
+            </div>
+        );
+    }
+    else {
+        for (const room of rooms) {
+            roomCards.push(
+                <RoomCard
+                    key={room.name}
+                    name={room.name}
+                    machines={room.machines}
+                    onMachineClick={m => {
+                        setDetailMachine(m);
+                        setShowDetails(true);
+                    }}
+                />);
+        }
     }
 
-    const getData = async () => {
-
-    }
+    const transitions = useTransition(roomCards, r => r.key, {
+        from: {
+            opacity: 0,
+            transform: 'translateX(25%)'
+        },
+        enter: {
+            opacity: 1,
+            transform: 'translateX(0%)'
+        },
+        leave: {
+            opacity: 0,
+            transform: 'translateX(0%)'
+        }
+    });
 
     return (
         <div className={classes.dashboard}>
-            {roomCards}
+
+            {transitions.map(({item, key, props: fprops}) =>
+                <animated.div key={key} style={fprops}>{item}</animated.div>
+            )}
+
             <MachineDetailsDialog
                 open={showDetails}
                 machine={detailMachine}
