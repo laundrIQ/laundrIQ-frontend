@@ -210,7 +210,7 @@ const ScheduleCard = props => {
     let data = [];
     let legendX = [];
     let legendY = [];
-    const m = moment().set({hour: 0, minute: 0});
+    const m = moment().utc().set({hour: 0, minute: 0}).local();
     for (let i = 0; i < 12; i++) {
         legendY.push(m.format('HH:mm'))
         m.add(2, 'h');
