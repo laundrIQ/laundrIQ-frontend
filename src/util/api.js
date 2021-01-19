@@ -13,6 +13,11 @@ const getCurrentStatus = async () => {
     return await get('/machines');
 }
 
+const getStatistics = async () => {
+    return await get('/stats');
+}
+
 export default {
-    getCurrentStatus
+    getCurrentStatus,
+    getStatistics
 }

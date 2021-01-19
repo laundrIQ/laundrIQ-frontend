@@ -31,6 +31,6 @@ moment.updateLocale('de', {
     week: {
         dow: 1,
     },
-})
+});
 
 ReactDOM.render(<Root/>, document.getElementById('root'));

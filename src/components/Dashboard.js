@@ -184,8 +184,9 @@ const Dashboard = props => {
         },
         leave: {
             opacity: 0,
-            transform: 'translateX(0%)'
-        }
+            transform: 'translateX(-25%)'
+        },
+        trail: 200
     });
 
     return (
