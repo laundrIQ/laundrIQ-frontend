@@ -98,7 +98,7 @@ const MachineDetailsDialog = props => {
             <DialogTitle>Machine {props.machine.name}</DialogTitle>
             <DialogContent>
                 <DetailItem
-                    icon="fiber_manual_record"
+                    icon="lens"
                     iconColor={props.machine.isBusy ? theme.palette.error.main : theme.palette.success.main}
                     title="status"
                     text={props.machine.isBusy ? "working" : "available"}

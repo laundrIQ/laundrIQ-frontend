@@ -14,6 +14,7 @@ import MachineDetailsDialog from "./MachineDetailsDialog.js";
 import CardTitle from "./CardTitle.js";
 import {animated, useTransition} from "react-spring";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import LaundryMachineBusyIcon from "../styles/LaundryMachineBusyIcon.js";
 
 const useStyles = makeStyles(theme => ({
     dashboard: {
@@ -54,13 +55,15 @@ const MachineItem = props => {
     const classes = useStyles();
     const theme = useTheme();
 
-    const iconColor = props.isBusy ? theme.palette.error.main : theme.palette.success.main;
+    const laundryIcon = props.isBusy ?
+        <LaundryMachineBusyIcon className={classes.machineIcon}/> :
+        <LaundryIcon className={classes.machineIcon} style={{fill: theme.palette.success.main}}/>;
 
     return (
         <Card variant="outlined" className={classes.machineItemCard}>
             <CardActionArea onClick={props.onClick}>
                 <div className={classes.machineItemContainer}>
-                    <LaundryIcon className={classes.machineIcon} style={{fill: iconColor}}/>
+                    {laundryIcon}
                     <div className={classes.machineTextContainer}>
                         <Typography className={classes.machineTitle}>
                             Machine {props.name}
