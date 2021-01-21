@@ -33,8 +33,9 @@ const useStyles = makeStyles(theme => ({
     },
     headerContent: {
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '1em',
+        padding: '1em min(5vw, 2em)',
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.background.default
     },
@@ -42,8 +43,11 @@ const useStyles = makeStyles(theme => ({
         fontSize: '3rem',
         fontWeight: '500',
         margin: 0,
-        marginLeft: '1em',
         flexGrow: 0
+    },
+    headerButtonContainer: {
+      display: 'flex',
+      flexWrap: 'wrap'
     },
     headerButton: {
         color: theme.palette.background.default,
@@ -76,7 +80,7 @@ const Header = props => {
                 <Typography className={classes.headerTitle}>
                     {props.title}
                 </Typography>
-                <div>
+                <div className={classes.headerButtonContainer}>
                     <IconButton
                         className={classes.headerButton}
                         onClick={props.onSettingsClick}

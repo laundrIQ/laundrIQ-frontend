@@ -21,6 +21,12 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexWrap: 'wrap'
     },
+    dashboardPortrait: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     roomCard: {
         width: '20em',
         margin: '1em',
@@ -193,7 +199,7 @@ const Dashboard = props => {
     });
 
     return (
-        <div className={classes.dashboard}>
+        <div className={display.isPortrait() ? classes.dashboardPortrait : classes.dashboard}>
 
             {transitions.map(({item, key, props: fprops}) =>
                 <animated.div key={key} style={fprops}>{item}</animated.div>

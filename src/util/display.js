@@ -70,7 +70,12 @@ const getPrettyTimeCalendar = (earliest, latest) => {
     return final_str;
 };
 
+const isPortrait = () => {
+  return window.innerHeight > window.innerWidth;
+};
+
 export default {
     getPrettyTimeRelative,
-    getPrettyTimeCalendar
+    getPrettyTimeCalendar,
+    isPortrait
 }

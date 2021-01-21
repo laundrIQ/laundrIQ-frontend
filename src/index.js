@@ -20,7 +20,7 @@ const Root = () => {
             </ThemeProvider>
         </BrowserRouter>
     );
-}
+};
 
 moment.updateLocale('en', {
     week: {

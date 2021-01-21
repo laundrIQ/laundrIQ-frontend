@@ -6,11 +6,18 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {animated, useTransition} from "react-spring";
 import api from "../util/api.js";
 import settings from "../util/settings.js";
+import display from "../util/display.js";
 
 const useStyles = makeStyles(theme => ({
     scheduleScreen: {
         display: 'flex',
         flexWrap: 'wrap'
+    },
+    scheduleScreenPortrait: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 }));
 
@@ -73,7 +80,7 @@ const ScheduleScreen = props => {
     });
 
     return (
-        <div className={classes.scheduleScreen}>
+        <div className={display.isPortrait() ? classes.scheduleScreenPortrait : classes.scheduleScreen}>
             {transitions.map(({item, key, props: fprops}) =>
                 <animated.div key={key} style={fprops}>{item}</animated.div>
             )}
