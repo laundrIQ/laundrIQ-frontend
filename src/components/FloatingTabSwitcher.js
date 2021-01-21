@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         borderRadius: '2em',
         padding: '0.25em 0.5em',
+        pointerEvents: "all"
     },
     tabItemContainer: {
     },

@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import Waves from "./components/Waves.js";
 import IconButton from "@material-ui/core/IconButton";
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Brightness7Icon from '@material-ui/icons/Brightness7';
 import themes from "./styles/themes.js";
 import BodyContent from "./components/BodyContent.js";
 import Typography from "@material-ui/core/Typography";
 import FloatingTabSwitcher from "./components/FloatingTabSwitcher.js";
 import { useHistory  } from 'react-router-dom'
+import RoundIcon from "./components/RoundIcon.js";
 
 // FORMAT: [url]: [icon]
 const tabs = {
@@ -64,6 +63,7 @@ const useStyles = makeStyles(theme => ({
         width: '100vw',
         bottom: 'min(5vh, 5vw)',
         flexShrink: 0,
+        pointerEvents: "none"
     }
 }));
 
@@ -80,7 +80,7 @@ const Header = props => {
                     className={classes.themeSwitcherButton}
                     onClick={() => themes.setDarkTheme(!themes.isDarkTheme())}
                 >
-                    {themes.isDarkTheme() ? <Brightness7Icon/> : <Brightness4Icon/>}
+                    {themes.isDarkTheme() ? <RoundIcon>brightness_7</RoundIcon> : <RoundIcon>brightness_4</RoundIcon>}
                 </IconButton>
             </div>
             <Waves/>
