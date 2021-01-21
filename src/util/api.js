@@ -13,8 +13,8 @@ const getCurrentStatus = async () => {
     return await get('/machines');
 }
 
-const getStatistics = async () => {
-    return await get('/stats');
+const getStatistics = async (weeks) => {
+    return await get(`/stats?weeks=${weeks}`);
 }
 
 export default {

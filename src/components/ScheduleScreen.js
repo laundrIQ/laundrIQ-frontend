@@ -5,6 +5,7 @@ import ScheduleCard from "./ScheduleCard.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {animated, useTransition} from "react-spring";
 import api from "../util/api.js";
+import settings from "../util/settings.js";
 
 const useStyles = makeStyles(theme => ({
     scheduleScreen: {
@@ -19,9 +20,15 @@ const ScheduleScreen = props => {
     const [data, setData] = useState([]);
 
     useEffect(async () => {
-        setData(await api.getStatistics());
+        setData(await api.getStatistics(settings.get().statisticsWeeks));
         setLoading(false);
     }, []);
+
+    settings.onSettingsChange(async changed => {
+        setLoading(true);
+        setData(await api.getStatistics(changed.statisticsWeeks));
+        setLoading(false);
+    });
 
     const scheduleCards = [];
     if (loading) {

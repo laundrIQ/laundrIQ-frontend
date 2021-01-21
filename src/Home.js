@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import Waves from "./components/Waves.js";
@@ -7,8 +7,9 @@ import themes from "./styles/themes.js";
 import BodyContent from "./components/BodyContent.js";
 import Typography from "@material-ui/core/Typography";
 import FloatingTabSwitcher from "./components/FloatingTabSwitcher.js";
-import { useHistory  } from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import RoundIcon from "./components/RoundIcon.js";
+import SettingsDialog from "./components/SettingsDialog.js";
 
 // FORMAT: [url]: [icon]
 const tabs = {
@@ -44,10 +45,9 @@ const useStyles = makeStyles(theme => ({
         marginLeft: '1em',
         flexGrow: 0
     },
-    themeSwitcherButton: {
+    headerButton: {
         color: theme.palette.background.default,
-        flexShrink: 0,
-        width: '66px',
+        flexShrink: 0
     },
     homeBody: {
         flexGrow: 1,
@@ -76,12 +76,22 @@ const Header = props => {
                 <Typography className={classes.headerTitle}>
                     {props.title}
                 </Typography>
-                <IconButton
-                    className={classes.themeSwitcherButton}
-                    onClick={() => themes.setDarkTheme(!themes.isDarkTheme())}
-                >
-                    {themes.isDarkTheme() ? <RoundIcon>brightness_7</RoundIcon> : <RoundIcon>brightness_4</RoundIcon>}
-                </IconButton>
+                <div>
+                    <IconButton
+                        className={classes.headerButton}
+                        onClick={props.onSettingsClick}
+                    >
+                        <RoundIcon>settings</RoundIcon>
+                    </IconButton>
+                    <IconButton
+                        className={classes.headerButton}
+                        onClick={() => themes.setDarkTheme(!themes.isDarkTheme())}
+                    >
+                        {themes.isDarkTheme() ?
+                            <RoundIcon>brightness_7</RoundIcon> :
+                            <RoundIcon>brightness_4</RoundIcon>}
+                    </IconButton>
+                </div>
             </div>
             <Waves/>
         </div>
@@ -89,16 +99,21 @@ const Header = props => {
 };
 
 Header.propTypes = {
-    title: PropTypes.string
+    title: PropTypes.string,
+    onSettingsClick: PropTypes.func
 }
 
 const Home = props => {
     const classes = useStyles();
     const history = useHistory();
+    const [settingsOpen, setSettingsOpen] = useState(false);
 
     return (
         <div className={classes.root}>
-            <Header title="laundrIQ"/>
+            <Header
+                title="laundrIQ"
+                onSettingsClick={() => setSettingsOpen(true)}
+            />
             <div className={classes.homeBody}>
                 <BodyContent/>
             </div>
@@ -108,6 +123,10 @@ const Home = props => {
                     onSwitch={t => history.push(t)}
                 />
             </div>
+            <SettingsDialog
+                open={settingsOpen}
+                onClose={() => setSettingsOpen(false)}
+            />
         </div>
     );
 };
