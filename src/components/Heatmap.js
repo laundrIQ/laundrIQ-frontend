@@ -1,7 +1,7 @@
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import useTheme from "@material-ui/core/styles/useTheme.js";
 import themes from "../styles/themes.js";
-import {CardActionArea, fade} from "@material-ui/core";
+import {CardActionArea, emphasize, fade} from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import PropTypes from "prop-types";
 import React from "react";
@@ -51,12 +51,15 @@ const HeatmapSquare = props => {
     const theme = useTheme();
 
     const getHeatmapColor = (activity) => {
-        let baseColor = themes.isDarkTheme() ? theme.palette.primary.light : theme.palette.primary.light;
+        let baseColor = themes.isDarkTheme() ? theme.palette.primary.light : emphasize(theme.palette.primary.main, 0.1);
         if (activity >= 0.75) {
             return baseColor;
         }
-        else if (activity >= 0.5) {
-            return fade(baseColor, 0.6);
+        else if (activity >= 0.6) {
+            return fade(baseColor, 0.7);
+        }
+        else if (activity >= 0.35) {
+            return fade(baseColor, 0.4);
         }
         else if (activity >= 0.15) {
             return fade(baseColor, 0.25);
