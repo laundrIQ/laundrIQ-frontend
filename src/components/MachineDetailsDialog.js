@@ -90,6 +90,14 @@ const MachineDetailsDialog = props => {
         ];
     }
     else {
+        statusDetails = [
+            <DetailItem
+                key="lastUsed"
+                icon="history"
+                title="last used"
+                text={moment(props.machine.lastUsed).calendar()}
+            />
+        ];
         // TODO: add "usually empty until"
     }
 

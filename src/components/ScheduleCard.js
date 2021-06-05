@@ -247,7 +247,7 @@ const ScheduleCard = props => {
                     data={data}
                     legendX={legendX}
                     legendY={legendY}
-                    width="17.5em"
+                    width="17.6em"
                 />
             </CardContent>
         </Card>
