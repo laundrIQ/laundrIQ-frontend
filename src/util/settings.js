@@ -28,10 +28,10 @@ let onSettingsChange = (callback) => {
 };
 
 const getNotificationPublicKey = async () => {
-    let key = localStorage.getItem('notif-key');
+    let key = sessionStorage.getItem('notif-key');
     if (!key) {
         key = (await api.getPushPublicKey()).publicKey;
-        localStorage.setItem('notif-key', key);
+        sessionStorage.setItem('notif-key', key);
     }
     return key;
 }
