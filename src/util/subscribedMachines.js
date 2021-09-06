@@ -35,12 +35,15 @@ const saveMachines = async (m, silent) => {
                         applicationServerKey: urlB64ToUint8Array(key)
                     });
                 }
-                catch {
+                catch (e) {
                     // user probably didn't grant permission
+                    console.error("user didn't grant permission or something similar went wrong...", e);
                     update = false;
                 }
             }
-            await api.updatePushSubscription(subscription, m);
+            if (subscription) {
+                await api.updatePushSubscription(subscription, m);
+            }
         }
         catch (e) {
             console.error("subscription stuff went wrong...", e);
