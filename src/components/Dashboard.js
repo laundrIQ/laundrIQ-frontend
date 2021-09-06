@@ -80,7 +80,7 @@ const MachineItem = props => {
         disableNotifications = Notification.permission === 'denied'
     }
     catch {}
-    if (/*props.isBusy &&*/ 'PushManager' in window) {
+    if (props.isBusy && 'PushManager' in window) {
         notificationIcon = props.hasNotification ? <NotificationsActiveRoundedIcon/> : <NotificationsNoneRoundedIcon/>;
     }
     let notificationTooltip = "Notify me when this machine is free";
