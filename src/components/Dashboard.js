@@ -4,7 +4,7 @@ import CardContent from "@material-ui/core/CardContent";
 import makeStyles from "@material-ui/core/styles/makeStyles.js";
 import List from "@material-ui/core/List";
 import LaundryIcon from '@material-ui/icons/LocalLaundryService';
-import {Typography} from "@material-ui/core";
+import {Tooltip, Typography} from "@material-ui/core";
 import useTheme from "@material-ui/core/styles/useTheme.js";
 import PropTypes from 'prop-types';
 import api from "../util/api.js";
@@ -15,6 +15,10 @@ import CardTitle from "./CardTitle.js";
 import {animated, useTransition} from "react-spring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import LaundryMachineBusyIcon from "../styles/LaundryMachineBusyIcon.js";
+import IconButton from "@material-ui/core/IconButton";
+import NotificationsNoneRoundedIcon from '@material-ui/icons/NotificationsNoneRounded';
+import NotificationsActiveRoundedIcon from '@material-ui/icons/NotificationsActiveRounded';
+import subscribedMachines from '../util/subscribedMachines.js';
 
 const useStyles = makeStyles(theme => ({
     dashboard: {
@@ -36,6 +40,11 @@ const useStyles = makeStyles(theme => ({
         marginTop: '0.5em',
         background: 'transparent'
     },
+    machineItemCardBody: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
     machineItemContainer: {
         padding: '0.5em',
         display: 'flex',
@@ -54,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     machineSubtitle: {
         color: theme.palette.text.secondary,
         fontSize: '1.25em'
-    }
+    },
 }));
 
 const MachineItem = props => {
@@ -65,9 +74,15 @@ const MachineItem = props => {
         <LaundryMachineBusyIcon className={classes.machineIcon}/> :
         <LaundryIcon className={classes.machineIcon} style={{fill: theme.palette.success.main}}/>;
 
+    let notificationIcon;
+    // if (props.isBusy) {
+    notificationIcon = props.hasNotification ? <NotificationsActiveRoundedIcon/> : <NotificationsNoneRoundedIcon/>;
+    // }
+    let notificationTooltip = "Notify me when this machine is free";
+
     return (
         <Card variant="outlined" className={classes.machineItemCard}>
-            <CardActionArea onClick={props.onClick}>
+            <CardActionArea onClick={props.onClick} className={classes.machineItemCardBody}>
                 <div className={classes.machineItemContainer}>
                     {laundryIcon}
                     <div className={classes.machineTextContainer}>
@@ -79,6 +94,16 @@ const MachineItem = props => {
                         </Typography>
                     </div>
                 </div>
+                <Tooltip title={notificationTooltip}>
+                    <IconButton style={{marginRight: '0.5em'}} onClick={e => {
+                        if (props.onNotificationClick) {
+                            props.onNotificationClick(e);
+                        }
+                        e.stopPropagation();
+                    }}>
+                        {notificationIcon}
+                    </IconButton>
+                </Tooltip>
             </CardActionArea>
         </Card>
     );
@@ -87,7 +112,9 @@ MachineItem.propTypes = {
     name: PropTypes.string,
     status: PropTypes.string,
     isBusy: PropTypes.bool,
-    onClick: PropTypes.func
+    hasNotification: PropTypes.bool,
+    onClick: PropTypes.func,
+    onNotificationClick: PropTypes.func
 };
 
 const RoomCard = props => {
@@ -104,8 +131,10 @@ const RoomCard = props => {
                 name={machine.name}
                 status={status}
                 isBusy={machine.isBusy}
+                hasNotification={props.subscribedMachines.includes(machine.name)}
                 key={machine.name}
                 onClick={() => props.onMachineClick(machine)}
+                onNotificationClick={() => props.onMachineSubscribe(machine)}
             />
         );
     }
@@ -127,7 +156,9 @@ const RoomCard = props => {
 RoomCard.propTypes = {
     name: PropTypes.string,
     machines: PropTypes.array,
-    onMachineClick: PropTypes.func
+    subscribedMachines: PropTypes.array,
+    onMachineClick: PropTypes.func,
+    onMachineSubscribe: PropTypes.func
 };
 
 const Dashboard = props => {
@@ -136,6 +167,7 @@ const Dashboard = props => {
     const [detailMachine, setDetailMachine] = useState({});
     const [showDetails, setShowDetails] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [subbedMachines, setSubbedMachines] = useState(subscribedMachines.get());
 
     // TODO: add error handling
 
@@ -143,14 +175,32 @@ const Dashboard = props => {
         setRooms((await api.getCurrentStatus()).rooms);
         setLoading(false);
 
-        const interval = setInterval(async () => {
-            setRooms((await api.getCurrentStatus()).rooms);
-        }, 10000);
-
-        return () => {
-            clearInterval(interval);
-        }
+        const statusChannel = new BroadcastChannel('machine-status');
+        statusChannel.onmessage = e => {
+            if (e.data) {
+                switch (e.data.type) {
+                    case 'machine-status':
+                        console.log("got rooms!");
+                        setRooms(e.data.payload.rooms);
+                        setSubbedMachines(subscribedMachines.clean(e.data.payload.rooms));
+                        break;
+                }
+            }
+        };
     }, []);
+
+    const onSubscribe = machine => {
+        let subbed = subscribedMachines.get();
+        let i = subbed.indexOf(machine.name);
+        if (i >= 0) {
+            subbed.splice(i, 1);
+        }
+        else {
+            subbed.push(machine.name);
+        }
+        subscribedMachines.save(subbed);
+        setSubbedMachines(subbed);
+    };
 
     const roomCards = [];
     if (loading) {
@@ -163,7 +213,7 @@ const Dashboard = props => {
                 width: '10em',
                 height: '10em'
             }}>
-                <CircularProgress  style={{position: 'absolute'}}/>
+                <CircularProgress style={{position: 'absolute'}}/>
             </div>
         );
     }
@@ -178,6 +228,8 @@ const Dashboard = props => {
                         setDetailMachine(m);
                         setShowDetails(true);
                     }}
+                    subscribedMachines={subbedMachines}
+                    onMachineSubscribe={m => onSubscribe(m)}
                 />);
         }
     }
