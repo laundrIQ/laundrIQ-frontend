@@ -75,9 +75,14 @@ const MachineItem = props => {
         <LaundryIcon className={classes.machineIcon} style={{fill: theme.palette.success.main}}/>;
 
     let notificationIcon;
-    // if (props.isBusy) {
-    notificationIcon = props.hasNotification ? <NotificationsActiveRoundedIcon/> : <NotificationsNoneRoundedIcon/>;
-    // }
+    let disableNotifications = false;
+    try {
+        disableNotifications = Notification.permission === 'denied'
+    }
+    catch {}
+    if (/*props.isBusy &&*/ 'PushManager' in window) {
+        notificationIcon = props.hasNotification ? <NotificationsActiveRoundedIcon/> : <NotificationsNoneRoundedIcon/>;
+    }
     let notificationTooltip = "Notify me when this machine is free";
 
     return (
@@ -95,12 +100,15 @@ const MachineItem = props => {
                     </div>
                 </div>
                 <Tooltip title={notificationTooltip}>
-                    <IconButton style={{marginRight: '0.5em'}} onClick={e => {
-                        if (props.onNotificationClick) {
-                            props.onNotificationClick(e);
-                        }
-                        e.stopPropagation();
-                    }}>
+                    <IconButton
+                        style={{marginRight: '0.5em'}}
+                        onClick={e => {
+                            if (props.onNotificationClick) {
+                                props.onNotificationClick(e);
+                            }
+                            e.stopPropagation();
+                        }}
+                        disabled={disableNotifications}>
                         {notificationIcon}
                     </IconButton>
                 </Tooltip>
@@ -172,24 +180,23 @@ const Dashboard = props => {
     // TODO: add error handling
 
     useEffect(async () => {
-        setRooms((await api.getCurrentStatus()).rooms);
+        let tempRooms = (await api.getCurrentStatus()).rooms
+        setRooms(tempRooms);
+        setSubbedMachines(subscribedMachines.clean(tempRooms));
         setLoading(false);
 
-        const statusChannel = new BroadcastChannel('machine-status');
-        statusChannel.onmessage = e => {
-            if (e.data) {
-                switch (e.data.type) {
-                    case 'machine-status':
-                        console.log("got rooms!");
-                        setRooms(e.data.payload.rooms);
-                        setSubbedMachines(subscribedMachines.clean(e.data.payload.rooms));
-                        break;
-                }
-            }
-        };
+        const interval = setInterval(async () => {
+            tempRooms = (await api.getCurrentStatus()).rooms;
+            setRooms(tempRooms);
+            setSubbedMachines(subscribedMachines.clean(tempRooms));
+        }, 10000);
+
+        return () => {
+            clearInterval(interval);
+        }
     }, []);
 
-    const onSubscribe = machine => {
+    const onSubscribe = async machine => {
         let subbed = subscribedMachines.get();
         let i = subbed.indexOf(machine.name);
         if (i >= 0) {
@@ -198,7 +205,7 @@ const Dashboard = props => {
         else {
             subbed.push(machine.name);
         }
-        subscribedMachines.save(subbed);
+        subbed = await subscribedMachines.save(subbed);
         setSubbedMachines(subbed);
     };
 

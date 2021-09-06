@@ -44,21 +44,6 @@ if ('serviceWorker' in navigator) {
             // registration failed :(
             console.log('notificationWorker registration failed: ', err);
         });
-
-        await navigator.serviceWorker.ready;
-        console.log("sending test broadcast...");
-        const initChannel = new BroadcastChannel('notification-init');
-        initChannel.postMessage({type: 'api-endpoint', payload: endpoint});
-        initChannel.postMessage({type: 'subbed-machines', payload: subscribedMachines.get()});
-
-        initChannel.onmessage = e => {
-            if (!e.data) return;
-            switch (e.data.type) {
-                case 'sw-subbed-machines':
-                    subscribedMachines.save(e.data.payload);
-                    break;
-            }
-        }
     });
 }
 

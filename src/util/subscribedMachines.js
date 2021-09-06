@@ -1,13 +1,62 @@
-const key = 'subscribed-machines';
-const initChannel = new BroadcastChannel('notification-init');
+import settings from "./settings.js";
+import api from "./api.js";
 
-const saveMachines = m => {
-    sessionStorage.setItem(key, JSON.stringify(m));
-    initChannel.postMessage({type: 'subbed-machines', payload: m});
+const key = 'subscribed-machines';
+
+const urlB64ToUint8Array = base64String => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+};
+
+const saveMachines = async (m, silent) => {
+    if (localStorage.getItem(key) === JSON.stringify(m)) return;
+
+    let update = true;
+
+    if (!silent) {
+        try {
+            const reg = await navigator.serviceWorker.getRegistration();
+            let subscription = await reg.pushManager.getSubscription();
+            if (!subscription) {
+                const key = await settings.getNotificationPublicKey();
+                try {
+                    subscription = await reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlB64ToUint8Array(key)
+                    });
+                }
+                catch {
+                    // user probably didn't grant permission
+                    update = false;
+                }
+            }
+            await api.updatePushSubscription(subscription, m);
+        }
+        catch (e) {
+            console.error("subscription stuff went wrong...", e);
+        }
+    }
+    if (update) {
+        localStorage.setItem(key, JSON.stringify(m));
+        return m;
+    }
+    else {
+        return loadMachines();
+    }
 };
 
 const loadMachines = () => {
-    const res = sessionStorage.getItem(key);
+    const res = localStorage.getItem(key);
     if (!res) return [];
     else return JSON.parse(res);
 };
@@ -21,7 +70,7 @@ const cleanMachines = (rooms) => {
             }
         }
     }
-    saveMachines(subbedMachines);
+    saveMachines(subbedMachines, true);
     return subbedMachines;
 };
 

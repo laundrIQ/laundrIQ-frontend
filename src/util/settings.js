@@ -1,3 +1,4 @@
+import api from "./api.js";
 
 const defaultSettings = {
     statisticsWeeks: 4
@@ -26,8 +27,18 @@ let onSettingsChange = (callback) => {
     settingsCallback = callback;
 };
 
+const getNotificationPublicKey = async () => {
+    let key = localStorage.getItem('notif-key');
+    if (!key) {
+        key = (await api.getPushPublicKey()).publicKey;
+        localStorage.setItem('notif-key', key);
+    }
+    return key;
+}
+
 export default {
     get: getSettings,
     save: saveSettings,
-    onSettingsChange
+    onSettingsChange,
+    getNotificationPublicKey
 }
