@@ -3,6 +3,7 @@ const sendNotification = async machine => {
     return self.registration.showNotification(`Machine ${machine.name} is free!`, {
         body: `Machine ${machine.name} in room ${machine.room} has just stopped working and should be free to use.`,
         vibrate: [100, 50, 100],
+        icon: '/favicon.png',
         data: {
             dateOfArrival: Date.now(),
             primaryKey: machine.name

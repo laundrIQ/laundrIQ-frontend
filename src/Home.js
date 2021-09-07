@@ -10,6 +10,7 @@ import FloatingTabSwitcher from "./components/FloatingTabSwitcher.js";
 import {useHistory} from 'react-router-dom'
 import RoundIcon from "./components/RoundIcon.js";
 import SettingsDialog from "./components/SettingsDialog.js";
+import LaundrIqIcon from "./styles/LaundrIQIcon.js";
 
 // FORMAT: [url]: [icon]
 const tabs = {
@@ -43,11 +44,19 @@ const useStyles = makeStyles(theme => ({
         fontSize: '3rem',
         fontWeight: '500',
         margin: 0,
-        flexGrow: 0
+        flexGrow: 0,
+        display: "flex",
+        alignItems: "center"
+    },
+    headerIcon: {
+        width: '1em',
+        height: '1em',
+        marginRight: '0.25em',
     },
     headerButtonContainer: {
-      display: 'flex',
-      flexWrap: 'wrap'
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end'
     },
     headerButton: {
         color: theme.palette.background.default,
@@ -78,6 +87,10 @@ const Header = props => {
         <div className={classes.headerContainer}>
             <div className={classes.headerContent}>
                 <Typography className={classes.headerTitle}>
+                    <LaundrIqIcon
+                        color="currentColor"
+                        className={classes.headerIcon}
+                    />
                     {props.title}
                 </Typography>
                 <div className={classes.headerButtonContainer}>
